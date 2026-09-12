@@ -1,0 +1,13 @@
+<view class="editor-page">
+  <button class="image-picker" bindtap="chooseImage">
+    <image wx:if="{{image}}" src="{{image}}" mode="aspectFill" />
+    <text wx:else>＋ 上传图片</text>
+  </button>
+  <label><text>菜名</text><input value="{{name}}" bindinput="setName" placeholder="输入菜名" maxlength="30" /></label>
+  <label><text>分类</text><picker range="{{categories}}" value="{{categoryIndex}}" bindchange="setCategory"><view class="picker-value">{{category}}<text>›</text></view></picker></label>
+  <label><text>食材</text><textarea value="{{ingredientsText}}" bindinput="setIngredients" placeholder="用空格、逗号、顿号或换行分开" maxlength="300" /></label>
+  <text class="note">食材会自动拆分成独立标签。</text>
+  <label><text>简介</text><textarea value="{{description}}" bindinput="setDescription" placeholder="可选" maxlength="300" /></label>
+  <button class="save" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submit">保存并同步</button>
+  <view class="safe-bottom"></view>
+</view>

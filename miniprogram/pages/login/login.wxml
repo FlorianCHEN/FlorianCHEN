@@ -1,0 +1,9 @@
+<view class="login-page">
+  <view class="login-card">
+    <text class="title">管理登录</text>
+    <text class="hint">登录后可以新增、修改、换图和删除菜品。</text>
+    <label><text>账号</text><input value="{{username}}" bindinput="setUsername" placeholder="输入账号" /></label>
+    <label><text>密码</text><input value="{{password}}" bindinput="setPassword" password placeholder="输入密码" /></label>
+    <button class="submit" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submit">登录</button>
+  </view>
+</view>

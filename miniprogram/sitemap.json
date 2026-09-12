@@ -1,0 +1,4 @@
+{
+  "desc": "開開厨房菜单",
+  "rules": [{ "action": "allow", "page": "*" }]
+}

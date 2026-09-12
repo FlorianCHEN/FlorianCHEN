@@ -1,7 +1,7 @@
 const PROJECT_URL = Deno.env.get('SUPABASE_URL')!;
 const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const BUCKET = 'dish-images';
-const ALLOWED_ORIGINS = new Set(['https://florianchen.github.io']);
+const ALLOWED_ORIGINS = new Set(['https://florianchen.github.io', 'https://servicewechat.com']);
 
 function cors(origin: string | null) {
   const allowed = !origin || ALLOWED_ORIGINS.has(origin) || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);

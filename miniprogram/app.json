@@ -1,0 +1,18 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/detail/detail",
+    "pages/related/related",
+    "pages/editor/editor",
+    "pages/login/login"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#fffefa",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "開開厨房",
+    "backgroundColor": "#fffefa",
+    "backgroundTextStyle": "light"
+  },
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

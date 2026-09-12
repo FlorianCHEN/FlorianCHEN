@@ -1,0 +1,52 @@
+<view class="page">
+  <view class="topbar">
+    <button class="icon-button menu-button" bindtap="toggleDrawer" aria-label="打开菜单"><view></view><view></view><view></view></button>
+    <text class="brand">開開厨房</text>
+    <button class="add-button" bindtap="openEditor" aria-label="新增菜谱">＋</button>
+  </view>
+
+  <view class="content">
+    <view class="search-box">
+      <text class="search-icon">⌕</text>
+      <input value="{{query}}" bindinput="onSearch" placeholder="搜索菜名或食材" confirm-type="search" />
+      <button wx:if="{{query}}" class="clear" bindtap="clearSearch">×</button>
+    </view>
+
+    <scroll-view class="filters" scroll-x enhanced show-scrollbar="{{false}}">
+      <view class="filter-row">
+        <button wx:for="{{categories}}" wx:key="*this" class="filter {{category === item ? 'active' : ''}}" data-category="{{item}}" bindtap="chooseCategory">{{item}}</button>
+      </view>
+    </scroll-view>
+
+    <view wx:if="{{loading}}" class="loading">正在读取菜单…</view>
+    <view wx:elif="{{error}}" class="empty"><text class="empty-title">菜单暂时无法打开</text><text>{{error}}</text><button class="retry" bindtap="retryLoad">重新加载</button></view>
+    <view wx:elif="{{!visible.length}}" class="empty"><text class="empty-title">没有找到相关菜品</text><button class="retry" bindtap="clearSearch">查看全部</button></view>
+    <block wx:else>
+      <view class="waterfall">
+        <view wx:for="{{visible}}" wx:key="id" class="dish-card" data-id="{{item.id}}" bindtap="openDish">
+          <image class="dish-image" style="height:{{item.height}}rpx" src="{{item.image}}" mode="aspectFill" lazy-load />
+          <text class="dish-name">{{item.name}}</text>
+          <view class="card-meta"><text>{{item.category}}</text><text>{{item.ingredients.length}} 种食材</text></view>
+        </view>
+      </view>
+      <view wx:if="{{totalPages > 1}}" class="pager">
+        <button class="page-button" disabled="{{page === 1}}" bindtap="previousPage">‹ 上一页</button>
+        <text>{{page}} / {{totalPages}}</text>
+        <button class="page-button" disabled="{{page === totalPages}}" bindtap="nextPage">下一页 ›</button>
+      </view>
+    </block>
+  </view>
+
+  <view wx:if="{{drawerOpen}}" class="drawer-mask" bindtap="closeDrawer">
+    <view class="drawer" catchtap="noop">
+      <view class="drawer-head"><text>開開厨房</text><button bindtap="closeDrawer">×</button></view>
+      <button wx:for="{{categories}}" wx:key="*this" class="drawer-item {{category === item ? 'active' : ''}}" data-category="{{item}}" bindtap="chooseCategory">{{item === '全部' ? '全部菜谱' : item}}</button>
+      <view class="drawer-actions">
+        <button bindtap="openEditor">新增菜谱</button>
+        <button wx:if="{{isAdmin}}" bindtap="logout">退出管理</button>
+        <button wx:else bindtap="openLogin">管理登录</button>
+      </view>
+    </view>
+  </view>
+  <view class="safe-bottom"></view>
+</view>
