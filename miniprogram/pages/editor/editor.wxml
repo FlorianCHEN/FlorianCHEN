@@ -1,7 +1,7 @@
 <view class="editor-page">
   <button class="image-picker" bindtap="chooseImage">
     <image wx:if="{{image}}" src="{{image}}" mode="aspectFill" />
-    <text wx:else>＋ 上传图片</text>
+    <text wx:else>上传图片</text>
   </button>
   <label><text>菜名</text><input value="{{name}}" bindinput="setName" placeholder="输入菜名" maxlength="30" /></label>
   <label><text>分类</text><picker range="{{categories}}" value="{{categoryIndex}}" bindchange="setCategory"><view class="picker-value">{{category}}<text>›</text></view></picker></label>

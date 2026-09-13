@@ -2,7 +2,18 @@ const API_URL = 'https://vqgpbepmuteoszdagxjl.supabase.co/functions/v1/kitchen-a
 const SESSION_KEY = 'kaikai-cloud-session';
 
 function token() {
-  return wx.getStorageSync(SESSION_KEY) || '';
+  const value = wx.getStorageSync(SESSION_KEY) || '';
+  if (!value) return '';
+  try {
+    const payload = value.split('.')[0];
+    const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = normalized + '='.repeat((4 - normalized.length % 4) % 4);
+    const bytes = new Uint8Array(wx.base64ToArrayBuffer(padded));
+    const claims = JSON.parse(String.fromCharCode.apply(null, bytes));
+    if (Number(claims.exp) > Date.now()) return value;
+  } catch (error) {}
+  wx.removeStorageSync(SESSION_KEY);
+  return '';
 }
 
 function parseBody(value) {
@@ -53,20 +64,17 @@ function uploadDish(filePath, dish) {
 }
 
 function normalizeDish(row) {
-  const remoteImage = /^https:\/\//.test(row.image_url || '') ? row.image_url : '';
-  const seed = [...row.id].reduce((sum, char) => sum + char.charCodeAt(0), 0);
-  const ratios = [0.76, 0.84, 0.92, 1, 1.12, 1.28, 1.42];
-  const ratio = ratios[seed % ratios.length];
+  const remoteImage = row.image_path && /^https:\/\//.test(row.image_url || '') ? row.image_url : '';
   return {
     id: row.id,
     name: row.name,
     category: row.category,
     ingredients: Array.isArray(row.ingredients) ? row.ingredients : [],
+    ingredientText: Array.isArray(row.ingredients) ? row.ingredients.join(' · ') : '',
     description: row.description || '',
-    image: remoteImage || `/assets/dishes/${row.id}.jpg`,
+    image: remoteImage,
+    hasImage: Boolean(remoteImage),
     imagePath: row.image_path || '',
-    ratio,
-    height: Math.round(350 / ratio)
   };
 }
 

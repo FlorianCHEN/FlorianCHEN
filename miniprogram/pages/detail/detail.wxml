@@ -2,10 +2,10 @@
   <view wx:if="{{loading}}" class="loading">正在读取菜谱…</view>
   <view wx:elif="{{!dish}}" class="empty"><text class="empty-title">菜品不存在</text></view>
   <block wx:else>
-    <image class="hero" src="{{dish.image}}" mode="aspectFill" />
+    <image wx:if="{{dish.hasImage}}" class="hero" src="{{dish.image}}" mode="aspectFill" />
+    <view wx:else class="hero hero-placeholder"><text>{{isAdmin ? '添加图片' : '暂无图片'}}</text></view>
     <view class="body">
       <text class="name">{{dish.name}}</text>
-      <view class="tags"><text wx:for="{{tags}}" wx:key="*this">{{item}}</text></view>
       <text wx:if="{{dish.description}}" class="description">{{dish.description}}</text>
       <view class="section">
         <text class="section-title">食材</text>

@@ -2,7 +2,7 @@ const api = require('../../utils/api');
 const NON_LINKED = new Set(['蒜', '葱', '姜', '黑胡椒', '糖', '醋', '孜然', '咖喱', '可乐', '茶叶', '迷迭香']);
 
 Page({
-  data: { dish: null, ingredients: [], tags: [], isAdmin: false, loading: true },
+  data: { dish: null, ingredients: [], isAdmin: false, loading: true },
   onLoad(options) { this.id = options.id; this.loadDish(); },
   onShow() {
     this.setData({ isAdmin: api.isAdmin() });
@@ -17,7 +17,7 @@ Page({
     if (!dish) return this.setData({ loading: false });
     const ingredients = dish.ingredients.map((name) => ({ name, linked: !NON_LINKED.has(name) }));
     this.loaded = true;
-    this.setData({ dish, ingredients, tags: dish.ingredients.slice(0, 3), loading: false });
+    this.setData({ dish, ingredients, loading: false });
     wx.setNavigationBarTitle({ title: dish.name });
   },
   openRelated(event) {

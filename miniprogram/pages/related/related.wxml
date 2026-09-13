@@ -4,9 +4,10 @@
   <view wx:elif="{{!dishes.length}}" class="empty"><text class="empty-title">暂无相关菜品</text></view>
   <view wx:else class="waterfall">
     <view wx:for="{{dishes}}" wx:key="id" class="dish-card" data-id="{{item.id}}" bindtap="openDish">
-      <image class="dish-image" style="height:{{item.height}}rpx" src="{{item.image}}" mode="aspectFill" lazy-load />
+      <image wx:if="{{item.hasImage}}" class="dish-image" src="{{item.image}}" mode="aspectFill" lazy-load />
+      <view wx:else class="dish-image image-placeholder"><text>暂无图片</text></view>
       <text class="dish-name">{{item.name}}</text>
-      <view class="card-meta"><text>{{item.category}}</text><text>{{item.ingredients.length}} 种食材</text></view>
+      <text class="ingredients">{{item.ingredientText}}</text>
     </view>
   </view>
   <view class="safe-bottom"></view>

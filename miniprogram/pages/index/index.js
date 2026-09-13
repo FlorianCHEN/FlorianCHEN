@@ -13,11 +13,15 @@ Page({
     totalPages: 1,
     loading: true,
     error: '',
-    drawerOpen: false,
+    statusBarHeight: 24,
     isAdmin: false
   },
 
-  onLoad() { this.loadMenu(); },
+  onLoad() {
+    const windowInfo = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync();
+    this.setData({ statusBarHeight: windowInfo.statusBarHeight || 24 });
+    this.loadMenu();
+  },
   onShow() {
     this.setData({ isAdmin: api.isAdmin() });
     const app = getApp();
@@ -57,7 +61,7 @@ Page({
   retryLoad() { this.loadMenu(); },
   clearSearch() { this.setData({ query: '', category: '全部' }, () => this.applyFilters(true)); },
   chooseCategory(event) {
-    this.setData({ category: event.currentTarget.dataset.category, drawerOpen: false }, () => this.applyFilters(true));
+    this.setData({ category: event.currentTarget.dataset.category }, () => this.applyFilters(true));
   },
   previousPage() {
     if (this.data.page <= 1) return;
@@ -67,14 +71,8 @@ Page({
     if (this.data.page >= this.data.totalPages) return;
     this.setData({ page: this.data.page + 1 }, () => { this.applyFilters(); wx.pageScrollTo({ scrollTop: 0, duration: 220 }); });
   },
-  toggleDrawer() { this.setData({ drawerOpen: !this.data.drawerOpen }); },
-  noop() {},
-  closeDrawer() { this.setData({ drawerOpen: false }); },
   openDish(event) { wx.navigateTo({ url: `/pages/detail/detail?id=${event.currentTarget.dataset.id}` }); },
   openEditor() {
-    this.setData({ drawerOpen: false });
     wx.navigateTo({ url: api.isAdmin() ? '/pages/editor/editor' : '/pages/login/login?next=editor' });
-  },
-  openLogin() { this.setData({ drawerOpen: false }); wx.navigateTo({ url: '/pages/login/login' }); },
-  logout() { api.logout(); this.setData({ drawerOpen: false, isAdmin: false }); }
+  }
 });
