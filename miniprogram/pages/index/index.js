@@ -13,6 +13,7 @@ Page({
     totalPages: 1,
     loading: true,
     error: '',
+    cloudNotice: '',
     statusBarHeight: 24,
     isAdmin: false
   },
@@ -37,7 +38,7 @@ Page({
       const categories = CATEGORY_ORDER.filter((category) => category === '全部' || used.has(category));
       getApp().globalData.dishes = dishes;
       this.lastLoadedAt = Date.now();
-      this.setData({ dishes, categories, loading: false, error: '' }, () => this.applyFilters());
+      this.setData({ dishes, categories, loading: false, error: '', cloudNotice: api.notice() }, () => this.applyFilters());
     } catch (error) {
       this.setData({ loading: false, error: error.message || '菜单加载失败' });
     } finally {

@@ -1,5 +1,8 @@
 const API_URL = 'https://vqgpbepmuteoszdagxjl.supabase.co/functions/v1/kitchen-api';
 const SESSION_KEY = 'kaikai-cloud-session';
+const MENU_CACHE_KEY = 'kaikai-menu-cache';
+const SEED_MENU = require('../data/seed-menu');
+let listNotice = '';
 
 function token() {
   const value = wx.getStorageSync(SESSION_KEY) || '';
@@ -28,6 +31,13 @@ function handleResult(statusCode, raw, resolve, reject) {
   reject(new Error(data.error || '云端操作失败'));
 }
 
+function networkError(error) {
+  const detail = String(error && error.errMsg || '');
+  if (/domain list|合法域名/i.test(detail)) return new Error('云端域名尚未加入微信合法域名');
+  if (/timeout/i.test(detail)) return new Error('连接云端超时，请检查网络后重试');
+  return new Error(detail ? `暂时无法连接云端：${detail.replace(/^request:fail\s*/i, '')}` : '暂时无法连接云端');
+}
+
 function request(action, payload = {}, authenticated = false) {
   return new Promise((resolve, reject) => {
     const authorization = authenticated && token() ? { Authorization: `Bearer ${token()}` } : {};
@@ -37,7 +47,7 @@ function request(action, payload = {}, authenticated = false) {
       header: { 'content-type': 'application/json', ...authorization },
       data: { action, ...payload },
       success: (response) => handleResult(response.statusCode, response.data, resolve, reject),
-      fail: () => reject(new Error('暂时无法连接云端'))
+      fail: (error) => reject(networkError(error))
     });
   });
 }
@@ -79,7 +89,16 @@ function normalizeDish(row) {
 }
 
 function list() {
-  return request('list').then((rows) => rows.map(normalizeDish));
+  return request('list').then((rows) => {
+    wx.setStorageSync(MENU_CACHE_KEY, rows);
+    listNotice = '';
+    return rows.map(normalizeDish);
+  }).catch((error) => {
+    const cached = wx.getStorageSync(MENU_CACHE_KEY);
+    const rows = Array.isArray(cached) && cached.length ? cached : SEED_MENU;
+    listNotice = `${error.message}，当前显示本地菜单`;
+    return rows.map(normalizeDish);
+  });
 }
 
 function login(username, password) {
@@ -101,5 +120,6 @@ module.exports = {
   restore: (id) => request('restore', { id }, true).then(normalizeDish),
   remove: (id) => request('delete', { id }, true),
   isAdmin: () => Boolean(token()),
-  logout: () => wx.removeStorageSync(SESSION_KEY)
+  logout: () => wx.removeStorageSync(SESSION_KEY),
+  notice: () => listNotice
 };

@@ -18,6 +18,8 @@
       </view>
     </scroll-view>
 
+    <text wx:if="{{cloudNotice}}" class="cloud-notice">{{cloudNotice}}</text>
+
     <view wx:if="{{loading}}" class="loading">正在读取菜单…</view>
     <view wx:elif="{{error}}" class="empty"><text class="empty-title">菜单暂时无法打开</text><text>{{error}}</text><button class="retry" bindtap="retryLoad">重新加载</button></view>
     <view wx:elif="{{!visible.length}}" class="empty"><text class="empty-title">没有找到相关菜品</text><button class="retry" bindtap="clearSearch">查看全部</button></view>
